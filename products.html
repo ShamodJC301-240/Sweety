@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Butter & Bonbons</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍞</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <button class="dark-toggle" onclick="toggleDarkMode()">🌙</button>
+
+  <div id="cart-panel" class="cart-panel">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button class="close-cart" onclick="toggleCart()">&times;</button>
+    </div>
+    <ul id="cart-items"></ul>
+    <div class="cart-footer">
+      <p class="cart-total">Total: $<span id="cart-total">0.00</span></p>
+      <button class="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+  </div>
+  <div class="cart-overlay" onclick="toggleCart()"></div>
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-brand">B&B</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="products.html" class="nav-link active">Shop</a>
+      <a href="specials.html" class="nav-link">Specials</a>
+      <a href="events.html" class="nav-link">Events</a>
+      <a href="reviews.html" class="nav-link">Reviews</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="cart-btn" onclick="toggleCart()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span id="cart-count">0</span>
+      </button>
+      <button class="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="page-hero short">
+    <h1>Our Bakes</h1>
+    <p>Handcrafted daily with the finest ingredients</p>
+  </div>
+
+  <section class="section-block">
+    <div class="shop-controls">
+      <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()" class="search-input" />
+      <div class="category-filters">
+        <button onclick="filterByCategory('all', this)" class="category-btn active">All</button>
+        <button onclick="filterByCategory('Cakes', this)" class="category-btn">Cakes</button>
+        <button onclick="filterByCategory('Breads', this)" class="category-btn">Breads</button>
+        <button onclick="filterByCategory('Cookies', this)" class="category-btn">Cookies</button>
+        <button onclick="filterByCategory('Pastries', this)" class="category-btn">Pastries</button>
+        <button onclick="filterByCategory('Muffins', this)" class="category-btn">Muffins</button>
+        <button onclick="filterByCategory('Pies', this)" class="category-btn">Pies</button>
+        <button onclick="filterByCategory('Treats', this)" class="category-btn">Treats</button>
+      </div>
+    </div>
+    <div class="products-grid" id="productList"></div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">Butter & Bonbons</span>
+        <p>Handmade with love since 2000.</p>
+      </div>
+      <div class="footer-links">
+        <a href="products.html">Shop</a>
+        <a href="specials.html">Specials</a>
+        <a href="events.html">Events</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <p class="footer-copy">&copy; 2025 Butter & Bonbons. All rights reserved.</p>
+  </footer>
+
+  <div id="toastContainer"></div>
+  <script src="script.js"></script>
+  <script>
+    function renderProducts(list = products) {
+      const container = document.getElementById('productList');
+      container.innerHTML = '';
+      list.forEach((p) => {
+        const i = products.indexOf(p);
+        container.innerHTML += `
+          <div class="product-card" data-category="${p.category}">
+            <div class="product-img-wrap">
+              <img src="${p.image}" alt="${p.name}" loading="lazy"/>
+              <span class="product-category">${p.category}</span>
+            </div>
+            <div class="product-info">
+              <h3>${p.name}</h3>
+              <p>${p.description}</p>
+              <div class="product-row">
+                <span class="price">$${p.price.toFixed(2)}</span>
+                <button onclick="addToCart(${i})">Add to Cart</button>
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    function filterProducts() {
+      const val = document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('.product-card').forEach(c => {
+        c.style.display = c.innerText.toLowerCase().includes(val) ? '' : 'none';
+      });
+    }
+
+    function filterByCategory(cat, btn) {
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.product-card').forEach(c => {
+        c.style.display = (cat === 'all' || c.dataset.category === cat) ? '' : 'none';
+      });
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>
